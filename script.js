@@ -19,6 +19,9 @@ function processMessage() {
     // Разбиваем текст на строки
     const lines = inputText.split('\n').map(line => line.trim()).filter(line => line !== "");
   
+    // Логируем строки для отладки
+    console.log("Разобранные строки:", lines);
+  
     // Извлекаем номер рейса
     const fltLine = lines.find(line => line.startsWith("FLT/"));
     let flightNumber = "";
@@ -28,11 +31,13 @@ function processMessage() {
         flightNumber = flightParts[1].replace(/[^\d]/g, ""); // Убираем буквы, оставляем только цифры
       }
     }
+    console.log("Извлечённый номер рейса:", flightNumber);
   
     // Извлекаем номер накладной
     let awbLine = lines.find(line => line.match(/\d{3}-\d+/)) || "";
     let awbMatch = awbLine.match(/\d{3}-(\d{8})/);
     let awb = awbMatch ? awbMatch[1] : "";
+    console.log("Номер накладной:", awb);
   
     // Код аэропортов
     let depCode = "", destCode = "";
@@ -41,18 +46,22 @@ function processMessage() {
       depCode = awbRest.substring(0, 3);
       destCode = awbRest.substring(3, 6);
     }
+    console.log("Код отправления:", depCode, "Код назначения:", destCode);
   
     // Извлекаем отправителя (Shipper)
     let shipperLine = lines.find(line => line.startsWith("/OOO"));
     let shipper = shipperLine ? shipperLine.replace("/OOO", "").trim() : "Неизвестно";
+    console.log("Shipper:", shipper);
   
     // Количество мест (T)
     let piecesMatch = awbLine.match(/\/T(\d+)/);
     let pieces = piecesMatch ? piecesMatch[1] : "1";
+    console.log("Количество мест:", pieces);
   
     // Фактический вес (Kilos)
     let weightMatch = awbLine.match(/K([\d.]+)/);
     let actualWeight = weightMatch ? weightMatch[1] : "0";
+    console.log("Фактический вес:", actualWeight);
   
     // Расчётный вес (из строки RTD/)
     let rtdLine = lines.find(line => line.startsWith("RTD/"));
@@ -64,18 +73,22 @@ function processMessage() {
         calcWeight = Math.round(tVal).toString();
       }
     }
+    console.log("Расчётный вес:", calcWeight);
   
     // Минимальный тариф (MC)
     let mcMatch = awbLine.match(/MC([\d.]+)/);
     let mcTariff = mcMatch ? mcMatch[1].replace(".", ",") : "0,00";
+    console.log("Минимальный тариф:", mcTariff);
   
     // Фрахт (CT)
     let ctMatch = inputText.match(/\/CT([\d.]+)/);
     let ctFreight = ctMatch ? ctMatch[1].replace(".", ",") : "0,00";
+    console.log("Фрахт (CT):", ctFreight);
   
     // ACC (по умолчанию 100)
     let accLine = lines.find(line => line.startsWith("ACC/"));
     let acc = accLine ? accLine.split("/").pop() : "100";
+    console.log("ACC:", acc);
   
     // Дата отправления (из строки ISU)
     const isuLine = lines.find(line => line.startsWith("ISU/"));
@@ -86,6 +99,7 @@ function processMessage() {
         dateFormatted = formatDate(isuMatch[1], isuMatch[2], isuMatch[3]);
       }
     }
+    console.log("Дата отправления:", dateFormatted);
   
     // **Формирование строки**
     let result = [
@@ -107,26 +121,6 @@ function processMessage() {
     // Вывод результата
     document.getElementById("output").value = result;
     document.getElementById("input").value = ""; // Очистка ввода
-  }
-  
-  // **Функция копирования**
-  function copyResult() {
-    const outputEl = document.getElementById("output");
-    outputEl.select();
-    document.execCommand("copy");
-  
-    const notification = document.getElementById("notification");
-    notification.classList.add("show");
-  
-    setTimeout(() => {
-      notification.classList.remove("show");
-    }, 3000);
-  }
-  
-  // **Очистка поля ввода**
-  function clearInput() {
-    document.getElementById("input").value = "";
-    document.getElementById("error-message").style.display = "none"; // Скрытие ошибки
   }
   
   // **Функция показа ошибки**
