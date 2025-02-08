@@ -55,7 +55,7 @@ function processMessage() {
   let piecesMatch = awbLine.match(/\/T(\d+)/);
   let pieces = piecesMatch ? piecesMatch[1] : "1";
 
-  // Фактический вес (Kilos)
+  // **Физический вес (Kilos)**
   let weightMatch = awbLine.match(/K([\d.]+)/);
   let actualWeight = weightMatch ? parseFloat(weightMatch[1]) : 0;
 
@@ -66,10 +66,16 @@ function processMessage() {
 
   // **Платный вес (Chargeable Weight)**
   let chargeableWeight = Math.max(actualWeight, volumeWeight);
+  
+  // **Минимальный платный вес - 25 кг**
+  if (chargeableWeight < 25) {
+    chargeableWeight = 25;
+  }
 
-  console.log("Фактический вес:", actualWeight, "Объёмный вес:", volumeWeight, "Платный вес:", chargeableWeight);
+  console.log("Физический вес:", actualWeight, "Объёмный вес:", volumeWeight, "Платный вес (с учетом минимума):", chargeableWeight);
 
   // **Форматирование чисел (замена точки на запятую)**
+  let formattedActualWeight = actualWeight.toFixed(1).replace(".", ",");
   let formattedChargeableWeight = chargeableWeight.toFixed(1).replace(".", ",");
   let formattedVolume = volume.toFixed(2).replace(".", ",");
 
@@ -81,7 +87,7 @@ function processMessage() {
   let accLine = lines.find(line => line.startsWith("ACC/"));
   let acc = accLine ? accLine.split("/").pop() : "100";
 
-  // **Извлечение дат полётов и рейсов (трансфер)**
+  // **Формирование даты и рейса**
   const fltLine = lines.find(line => line.startsWith("FLT/"));
   let flightNumbers = [];
   let flightDates = [];
@@ -103,46 +109,39 @@ function processMessage() {
 
   // **Определение дат для трансфера**
   const isuLine = lines.find(line => line.startsWith("ISU/"));
-  let baseDate = "";
+  let dateFormatted = "";
 
   if (isuLine) {
     const isuMatch = isuLine.match(/ISU\/(\d{2})([A-Z]{3})(\d{2})/);
     if (isuMatch) {
       let baseDay = parseInt(isuMatch[1]);
       let month = isuMatch[2];
+      let year = `20${isuMatch[3]}`;
 
       if (isTransfer) {
         flightDates.push(`${baseDay}.${monthToNumber(month)}`);
         flightDates.push(`${baseDay + 1}.${monthToNumber(month)}`);
+        dateFormatted = flightDates.join("/");
       } else {
-        flightDates.push(`${baseDay}.${monthToNumber(month)}`);
+        dateFormatted = `${baseDay}.${monthToNumber(month)}.${year}`;
       }
     }
   }
 
-  console.log("Даты полётов:", flightDates);
+  console.log("Дата рейса:", dateFormatted);
 
   // **Формирование строки**
   let result = [
-    awb,                // Номер накладной (8 цифр)
-    "1",                // Фиксированное значение
-    shipper,            // Отправитель (Shipper)
-    depCode,            // Аэропорт отправления
-    destCode,           // Аэропорт назначения
-    ctFreight,          // Фрахт
-    pieces,             // Количество мест
-    actualWeight,       // Фактический вес
-    formattedChargeableWeight, // Платный вес (с запятой)
-    formattedVolume,    // Объём (MC) с запятой
-    acc,                // ACC
-    flightDates.join("/"), // Даты рейсов (разделены "/")
-    flightNumbers.join("/") // Номера рейсов (разделены "/")
+    awb, "1", shipper, depCode, destCode, ctFreight, pieces,
+    formattedActualWeight, formattedChargeableWeight, formattedVolume, acc,
+    dateFormatted, flightNumbers.join("/")
   ].join("\t");
 
   // Вывод результата
   document.getElementById("output").value = result;
 }
 
+// **Функция копирования результата**
 function copyResult() {
   const outputEl = document.getElementById("output");
 
@@ -161,12 +160,22 @@ function copyResult() {
     });
 }
 
+// **Функция очистки ввода**
 function clearInput() {
   document.getElementById("input").value = "";
   document.getElementById("output").value = "";
   document.getElementById("error-message").style.display = "none";
+  document.getElementById("error-message").textContent = "";
 }
 
+// **Функция отображения ошибки**
+function showError(message) {
+  const errorMessage = document.getElementById("error-message");
+  errorMessage.textContent = message;
+  errorMessage.style.display = "block";
+}
+
+// **Функция отображения уведомления**
 function showNotification(message) {
   const notification = document.getElementById("notification");
   notification.textContent = message;
@@ -177,12 +186,7 @@ function showNotification(message) {
   }, 3000);
 }
 
-function showError(message) {
-  const errorMessage = document.getElementById("error-message");
-  errorMessage.textContent = message;
-  errorMessage.style.display = "block";
-}
-
+// **Функция преобразования месяца в число**
 function monthToNumber(mmm) {
   const monthMap = {
     "JAN": "01", "FEB": "02", "MAR": "03",
