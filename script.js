@@ -1,8 +1,13 @@
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("processButton").addEventListener("click", processMessage);
+  document.getElementById("copyButton").addEventListener("click", copyResult);
+  document.getElementById("clearButton").addEventListener("click", clearInput);
+});
+
 function processMessage() {
   const inputText = document.getElementById('input').value.trim();
   const errorMessage = document.getElementById('error-message');
 
-  // Очистка предыдущих сообщений об ошибке
   errorMessage.style.display = "none";
 
   if (!inputText) {
@@ -10,36 +15,14 @@ function processMessage() {
     return;
   }
 
-  // Проверяем, есть ли ключевые слова
   if (!inputText.includes("FWB/") || !inputText.includes("FLT/") || !inputText.match(/\d{3}-\d+/)) {
     showError("Неверный формат сообщения FWB. Проверьте данные.");
     return;
   }
 
-  // Разбиваем текст на строки
   const lines = inputText.split('\n').map(line => line.trim()).filter(line => line !== "");
 
   console.log("Разобранные строки:", lines);
-
-  // Определяем, есть ли трансферные рейсы
-  const fltLine = lines.find(line => line.startsWith("FLT/"));
-  let flightNumbers = [];
-  let flightDates = [];
-  let isTransfer = false;
-
-  if (fltLine) {
-    let flightParts = fltLine.split("/");
-    for (let i = 1; i < flightParts.length; i += 2) {
-      if (flightParts[i].match(/[A-Z]{2}\d+/)) {
-        flightNumbers.push(flightParts[i].replace(/[^\d]/g, "")); // Убираем буквы, оставляем только цифры
-      }
-    }
-    if (flightNumbers.length > 1) {
-      isTransfer = true;
-    }
-  }
-
-  console.log("Номера рейсов:", flightNumbers);
 
   // Номер накладной (AWB)
   let awbLine = lines.find(line => line.match(/\d{3}-\d+/)) || "";
@@ -48,7 +31,7 @@ function processMessage() {
 
   console.log("Номер накладной:", awb);
 
-  // Определяем код аэропортов (отправления и назначения)
+  // Код аэропортов
   let depCode = "", destCode = "";
   let awbRest = awbLine.slice(awb.length + 4);
   if (awbRest.length >= 6) {
@@ -79,12 +62,16 @@ function processMessage() {
   // **Объёмный вес (Volume Weight)**
   let mcMatch = awbLine.match(/MC([\d.]+)/);
   let volume = mcMatch ? parseFloat(mcMatch[1]) : 0;
-  let volumeWeight = Math.ceil(volume * 166.666 * 2) / 2; // Умножаем, округляем в большую сторону до 0.5
+  let volumeWeight = Math.ceil(volume * 166.666 * 2) / 2; // Округление вверх до 0.5
 
   // **Платный вес (Chargeable Weight)**
   let chargeableWeight = Math.max(actualWeight, volumeWeight);
 
   console.log("Фактический вес:", actualWeight, "Объёмный вес:", volumeWeight, "Платный вес:", chargeableWeight);
+
+  // **Форматирование чисел (замена точки на запятую)**
+  let formattedChargeableWeight = chargeableWeight.toFixed(1).replace(".", ",");
+  let formattedVolume = volume.toFixed(2).replace(".", ",");
 
   // Фрахт (CT)
   let ctMatch = inputText.match(/\/CT([\d.]+)/);
@@ -94,22 +81,41 @@ function processMessage() {
   let accLine = lines.find(line => line.startsWith("ACC/"));
   let acc = accLine ? accLine.split("/").pop() : "100";
 
-  // **Извлечение дат полётов (из ISU/)**
+  // **Извлечение дат полётов и рейсов (трансфер)**
+  const fltLine = lines.find(line => line.startsWith("FLT/"));
+  let flightNumbers = [];
+  let flightDates = [];
+  let isTransfer = false;
+
+  if (fltLine) {
+    let flightParts = fltLine.split("/");
+    for (let i = 1; i < flightParts.length; i += 2) {
+      if (flightParts[i].match(/[A-Z]{2}\d+/)) {
+        flightNumbers.push(flightParts[i].replace(/[^\d]/g, ""));
+      }
+    }
+    if (flightNumbers.length > 1) {
+      isTransfer = true;
+    }
+  }
+
+  console.log("Номера рейсов:", flightNumbers);
+
+  // **Определение дат для трансфера**
   const isuLine = lines.find(line => line.startsWith("ISU/"));
-  let dateFormatted = "";
+  let baseDate = "";
 
   if (isuLine) {
     const isuMatch = isuLine.match(/ISU\/(\d{2})([A-Z]{3})(\d{2})/);
     if (isuMatch) {
-      let baseDate = formatDate(isuMatch[1], isuMatch[2], isuMatch[3]);
-      let baseDay = isuMatch[1]; // День месяца
-      let month = isuMatch[2]; // Буквенный месяц
+      let baseDay = parseInt(isuMatch[1]);
+      let month = isuMatch[2];
 
       if (isTransfer) {
         flightDates.push(`${baseDay}.${monthToNumber(month)}`);
-        flightDates.push(`${parseInt(baseDay) + 1}.${monthToNumber(month)}`); // Второй день для трансфера
+        flightDates.push(`${baseDay + 1}.${monthToNumber(month)}`);
       } else {
-        flightDates.push(baseDate);
+        flightDates.push(`${baseDay}.${monthToNumber(month)}`);
       }
     }
   }
@@ -126,8 +132,8 @@ function processMessage() {
     ctFreight,          // Фрахт
     pieces,             // Количество мест
     actualWeight,       // Фактический вес
-    chargeableWeight,   // Платный вес
-    volume.toFixed(2).replace(".", ","), // Объём (MC)
+    formattedChargeableWeight, // Платный вес (с запятой)
+    formattedVolume,    // Объём (MC) с запятой
     acc,                // ACC
     flightDates.join("/"), // Даты рейсов (разделены "/")
     flightNumbers.join("/") // Номера рейсов (разделены "/")
@@ -137,12 +143,46 @@ function processMessage() {
   document.getElementById("output").value = result;
 }
 
-// **Функция преобразования даты DDMMMYY → DD/MM/YYYY**
-function formatDate(dd, mmm, yy) {
-  return `${dd}/${monthToNumber(mmm)}/20${yy}`;
+function copyResult() {
+  const outputEl = document.getElementById("output");
+
+  if (!outputEl.value.trim()) {
+    showError("Нет данных для копирования!");
+    return;
+  }
+
+  navigator.clipboard.writeText(outputEl.value)
+    .then(() => {
+      showNotification("Результат скопирован в буфер обмена!");
+    })
+    .catch(err => {
+      console.error("Ошибка копирования:", err);
+      showError("Не удалось скопировать. Разрешите доступ к буферу обмена.");
+    });
 }
 
-// **Функция преобразования названия месяца в цифру**
+function clearInput() {
+  document.getElementById("input").value = "";
+  document.getElementById("output").value = "";
+  document.getElementById("error-message").style.display = "none";
+}
+
+function showNotification(message) {
+  const notification = document.getElementById("notification");
+  notification.textContent = message;
+  notification.classList.add("show");
+
+  setTimeout(() => {
+    notification.classList.remove("show");
+  }, 3000);
+}
+
+function showError(message) {
+  const errorMessage = document.getElementById("error-message");
+  errorMessage.textContent = message;
+  errorMessage.style.display = "block";
+}
+
 function monthToNumber(mmm) {
   const monthMap = {
     "JAN": "01", "FEB": "02", "MAR": "03",
@@ -151,11 +191,4 @@ function monthToNumber(mmm) {
     "OCT": "10", "NOV": "11", "DEC": "12"
   };
   return monthMap[mmm.toUpperCase()] || "00";
-}
-
-// **Функция показа ошибки**
-function showError(message) {
-  const errorMessage = document.getElementById('error-message');
-  errorMessage.textContent = message;
-  errorMessage.style.display = "block";
 }
