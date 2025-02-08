@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FWB Processor</title>
+  <!-- Подключаем внешний файл стилей -->
+  <link rel="stylesheet" href="style.css" />
+  <!-- Подключаем шрифт Roboto -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="container">
+    <h1>FWB Processor</h1>
+    <p>Вставьте исходное сообщение FWB в поле ниже и нажмите «Обработать». Итоговая строка для Excel появится в поле ниже. Нажмите «Копировать результат» для копирования строки одним кликом.</p>
+    <textarea id="input" placeholder="Вставьте сюда сообщение FWB..."></textarea>
+    <div class="btn-container">
+      <button onclick="processMessage()">Обработать</button>
+      <button onclick="copyResult()">Копировать результат</button>
+    </div>
+    <textarea id="output" readonly placeholder="Результат появится здесь..."></textarea>
+    <div id="notification">Результат скопирован в буфер обмена!</div>
+  </div>
+  
+  <!-- Подключаем внешний файл JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>
