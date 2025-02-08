@@ -7,8 +7,10 @@ document.addEventListener("DOMContentLoaded", function () {
 function processMessage() {
   const inputText = document.getElementById('input').value.trim();
   const errorMessage = document.getElementById('error-message');
+  const outputField = document.getElementById("output");
 
   errorMessage.style.display = "none";
+  outputField.value = ""; // Очищаем предыдущее значение
 
   if (!inputText) {
     showError("Поле ввода пустое. Вставьте сообщение FWB.");
@@ -55,24 +57,24 @@ function processMessage() {
   let piecesMatch = awbLine.match(/\/T(\d+)/);
   let pieces = piecesMatch ? piecesMatch[1] : "1";
 
-  // **Физический вес (Kilos)**
+  // Фактический вес (Kilos)
   let weightMatch = awbLine.match(/K([\d.]+)/);
   let actualWeight = weightMatch ? parseFloat(weightMatch[1]) : 0;
 
   // **Объёмный вес (Volume Weight)**
   let mcMatch = awbLine.match(/MC([\d.]+)/);
   let volume = mcMatch ? parseFloat(mcMatch[1]) : 0;
-  let volumeWeight = Math.ceil(volume * 166.666 * 2) / 2; // Округление вверх до 0.5
+  let volumeWeight = Math.ceil(volume * 166.666 * 2) / 2;
 
   // **Платный вес (Chargeable Weight)**
   let chargeableWeight = Math.max(actualWeight, volumeWeight);
-  
+
   // **Минимальный платный вес - 25 кг**
   if (chargeableWeight < 25) {
     chargeableWeight = 25;
   }
 
-  console.log("Физический вес:", actualWeight, "Объёмный вес:", volumeWeight, "Платный вес (с учетом минимума):", chargeableWeight);
+  console.log("Физический вес:", actualWeight, "Объёмный вес:", volumeWeight, "Платный вес:", chargeableWeight);
 
   // **Форматирование чисел (замена точки на запятую)**
   let formattedActualWeight = actualWeight.toFixed(1).replace(".", ",");
@@ -83,11 +85,13 @@ function processMessage() {
   let ctMatch = inputText.match(/\/CT([\d.]+)/);
   let ctFreight = ctMatch ? ctMatch[1].replace(".", ",") : "0,00";
 
-  // ACC (по умолчанию 100)
-  let accLine = lines.find(line => line.startsWith("ACC/"));
-  let acc = accLine ? accLine.split("/").pop() : "100";
+  // **Извлечение триггера (SPH)**
+  let sphLine = lines.find(line => line.startsWith("SPH/"));
+  let sphTrigger = sphLine ? sphLine.replace("SPH/", "").trim() : "Неизвестно";
 
-  // **Формирование даты и рейса**
+  console.log("Триггер SPH:", sphTrigger);
+
+  // **Извлечение рейсов и дат полётов**
   const fltLine = lines.find(line => line.startsWith("FLT/"));
   let flightNumbers = [];
   let flightDates = [];
@@ -133,16 +137,16 @@ function processMessage() {
   // **Формирование строки**
   let result = [
     awb, "1", shipper, depCode, destCode, ctFreight, pieces,
-    formattedActualWeight, formattedChargeableWeight, formattedVolume, acc,
+    formattedActualWeight, formattedChargeableWeight, formattedVolume, sphTrigger, // Триггер после объёма
     dateFormatted, flightNumbers.join("/")
   ].join("\t");
 
-  // Вывод результата
-  document.getElementById("output").value = result;
+  // **Вывод результата**
+  outputField.value = result;
 }
 
 // **Функция копирования результата**
-function copyResult() {
+function copyResult() { 
   const outputEl = document.getElementById("output");
 
   if (!outputEl.value.trim()) {
@@ -165,17 +169,9 @@ function clearInput() {
   document.getElementById("input").value = "";
   document.getElementById("output").value = "";
   document.getElementById("error-message").style.display = "none";
-  document.getElementById("error-message").textContent = "";
 }
 
-// **Функция отображения ошибки**
-function showError(message) {
-  const errorMessage = document.getElementById("error-message");
-  errorMessage.textContent = message;
-  errorMessage.style.display = "block";
-}
-
-// **Функция отображения уведомления**
+// **Функция вывода уведомления**
 function showNotification(message) {
   const notification = document.getElementById("notification");
   notification.textContent = message;
@@ -186,13 +182,15 @@ function showNotification(message) {
   }, 3000);
 }
 
+// **Функция отображения ошибки**
+function showError(message) {
+  const errorMessage = document.getElementById("error-message");
+  errorMessage.textContent = message;
+  errorMessage.style.display = "block";
+}
+
 // **Функция преобразования месяца в число**
 function monthToNumber(mmm) {
-  const monthMap = {
-    "JAN": "01", "FEB": "02", "MAR": "03",
-    "APR": "04", "MAY": "05", "JUN": "06",
-    "JUL": "07", "AUG": "08", "SEP": "09",
-    "OCT": "10", "NOV": "11", "DEC": "12"
-  };
-  return monthMap[mmm.toUpperCase()] || "00";
+  const months = { "JAN": "01", "FEB": "02", "MAR": "03", "APR": "04", "MAY": "05", "JUN": "06", "JUL": "07", "AUG": "08", "SEP": "09", "OCT": "10", "NOV": "11", "DEC": "12" };
+  return months[mmm.toUpperCase()] || "00";
 }
