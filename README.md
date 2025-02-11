@@ -60,9 +60,10 @@ FWB/16 555-11111111OVBKHV/T3K18.0MC0.15 FLT/FV6835/10 ISU/09FEB25/KJA SPH/460
 
 ### **Основные этапы обработки данных**
 1. **Разбивка текста на строки**:
-   ```js
-   const lines = inputText.split('\n').map(line => line.trim()).filter(line => line !== "");
+```js
+const lines = inputText.split('\n').map(line => line.trim()).filter(line => line !== "");
 ```
+
 Извлечение номера накладной (AWB):
 
 ```js
