@@ -1,95 +1,94 @@
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  body {
-    font-family: 'Roboto', sans-serif;
-    background: linear-gradient(135deg, #74ABE2, #5563DE);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  .container {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    padding: 30px;
-    width: 100%;
-    max-width: 800px;
-  }
-  h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333;
-    font-weight: 500;
-  }
-  p {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #555;
-    font-size: 16px;
-    line-height: 1.5;
-  }
-  textarea {
-    width: 100%;
-    padding: 15px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-    resize: vertical;
-    font-family: 'Roboto', sans-serif;
-  }
-  #input {
-    height: 200px;
-  }
-  #output {
-    height: 80px;
-    background: #f2f2f2;
-    font-weight: 500;
-    color: #333;
-    resize: none;
-  }
-  .btn-container {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  button {
-    background: #5563DE;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 12px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-    margin: 5px;
-  }
-  button:hover {
-    background: #4453c7;
-  }
-  #notification {
-    text-align: center;
-    font-size: 16px;
-    color: #28a745;
-    margin-top: 10px;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-  }
-  #notification.show {
-    opacity: 1;
-  }
-  
-  /* Сообщение об ошибке */
-  #error-message {
-    text-align: center;
-    color: #d32f2f;
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    display: none;
-  }
-  
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(135deg, #74ABE2, #5563DE);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.container {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  width: 100%;
+  max-width: 800px;
+}
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+  font-weight: 500;
+}
+p {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #555;
+  font-size: 16px;
+  line-height: 1.5;
+}
+textarea {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  resize: vertical;
+  font-family: 'Roboto', sans-serif;
+}
+#input {
+  height: 200px;
+}
+#output {
+  height: 80px;
+  background: #f2f2f2;
+  font-weight: 500;
+  color: #333;
+  resize: none;
+}
+.btn-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+button {
+  background: #5563DE;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 12px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin: 5px;
+}
+button:hover {
+  background: #4453c7;
+}
+#notification {
+  text-align: center;
+  font-size: 16px;
+  color: #28a745;
+  margin-top: 10px;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+#notification.show {
+  opacity: 1;
+}
+
+/* Сообщение об ошибке */
+#error-message {
+  text-align: center;
+  color: #d32f2f;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  display: none;
+}

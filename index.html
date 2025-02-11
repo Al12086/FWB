@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Обработчик FWB</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="container">
@@ -18,9 +18,9 @@
     <div id="error-message"></div>
 
     <div class="btn-container">
-      <button onclick="processMessage()">Обработать</button>
-      <button onclick="copyResult()">Копировать</button>
-      <button onclick="clearInput()">Очистить</button>
+      <button id="processButton">Обработать</button>
+      <button id="copyButton">Копировать</button>
+      <button id="clearButton">Очистить</button>
     </div>
 
     <textarea id="output" readonly placeholder="Результат появится здесь..."></textarea>
