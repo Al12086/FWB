@@ -95,50 +95,44 @@ function processMessage() {
   const fltLine = lines.find(line => line.startsWith("FLT/"));
   let flightNumbers = [];
   let flightDates = [];
-  let isTransfer = false;
 
   if (fltLine) {
     let flightParts = fltLine.split("/");
     for (let i = 1; i < flightParts.length; i += 2) {
       if (flightParts[i].match(/[A-Z]{2}\d+/)) {
-        flightNumbers.push(flightParts[i].replace(/[^\d]/g, ""));
+        flightNumbers.push(flightParts[i].replace(/[^\d]/g, "")); // Извлекаем номер рейса
+        if (flightParts[i + 1]) {
+          flightDates.push(flightParts[i + 1]); // Извлекаем дату (день полёта)
+        }
       }
-    }
-    if (flightNumbers.length > 1) {
-      isTransfer = true;
     }
   }
 
   console.log("Номера рейсов:", flightNumbers);
+  console.log("Даты полётов (дни):", flightDates);
 
-  // **Определение дат для трансфера**
+  // **Извлечение месяца и года из ISU**
   const isuLine = lines.find(line => line.startsWith("ISU/"));
-  let dateFormatted = "";
+  let monthYear = "";
 
   if (isuLine) {
-    const isuMatch = isuLine.match(/ISU\/(\d{2})([A-Z]{3})(\d{2})/);
+    const isuMatch = isuLine.match(/ISU\/\d{2}([A-Z]{3})(\d{2})/);
     if (isuMatch) {
-      let baseDay = parseInt(isuMatch[1]);
-      let month = isuMatch[2];
-      let year = `20${isuMatch[3]}`;
-
-      if (isTransfer) {
-        flightDates.push(`${baseDay}.${monthToNumber(month)}`);
-        flightDates.push(`${baseDay + 1}.${monthToNumber(month)}`);
-        dateFormatted = flightDates.join("/");
-      } else {
-        dateFormatted = `${baseDay}.${monthToNumber(month)}.${year}`;
-      }
+      monthYear = `${monthToNumber(isuMatch[1])}.${isuMatch[2]}`; // Преобразуем в "02.25"
     }
   }
 
-  console.log("Дата рейса:", dateFormatted);
+  console.log("Месяц и год полёта:", monthYear);
+
+  // **Формирование дат с месяцем и годом**
+  let formattedFlightDates = flightDates.map(date => `${date}.${monthYear}`).join("/");
+  console.log("Финальная дата полёта:", formattedFlightDates);
 
   // **Формирование строки**
   let result = [
     awb, "1", shipper, depCode, destCode, ctFreight, pieces,
     formattedActualWeight, formattedChargeableWeight, formattedVolume, sphTrigger, // Триггер после объёма
-    dateFormatted, flightNumbers.join("/")
+    formattedFlightDates, flightNumbers.join("/")
   ].join("\t");
 
   // **Вывод результата**
