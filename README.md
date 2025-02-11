@@ -65,11 +65,13 @@ FWB/16 555-11111111OVBKHV/T3K18.0MC0.15 FLT/FV6835/10 ISU/09FEB25/KJA SPH/460
 
 Извлечение номера накладной (AWB):
 
+```js
 let awbMatch = awbLine.match(/\d{3}-(\d{8})/);
 let awb = awbMatch ? awbMatch[1] : "";
 
 Поиск номеров рейсов и дат полётов:
 
+```js
 const fltLine = lines.find(line => line.startsWith("FLT/"));
 let flightNumbers = [];
 let flightDates = [];
@@ -89,6 +91,7 @@ if (fltLine) {
 
 Форматирование даты рейса:
 
+```js
 const isuLine = lines.find(line => line.startsWith("ISU/"));
 let monthYear = "";
 
@@ -102,6 +105,7 @@ let formattedFlightDates = flightDates.map(date => `${date}.${monthYear}`).join(
 
 Копирование в буфер обмена:
 
+```js
 navigator.clipboard.writeText(outputEl.value)
   .then(() => {
     showNotification("Результат скопирован в буфер обмена!");
