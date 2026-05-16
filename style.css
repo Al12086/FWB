@@ -16,6 +16,7 @@ body {
   overflow-x: hidden;
 }
 
+/* Фоновые самолёты и облака с анимацией */
 body::before,
 body::after {
   content: "\f072";
@@ -32,6 +33,7 @@ body::before {
   top: 15%;
   left: -40px;
   transform: rotate(-15deg);
+  animation: floatPlane 22s ease-in-out infinite;
 }
 
 body::after {
@@ -39,6 +41,7 @@ body::after {
   right: -30px;
   transform: rotate(25deg) scaleX(-1);
   font-size: 170px;
+  animation: floatPlane 28s ease-in-out infinite reverse;
 }
 
 .airplane-bg {
@@ -110,6 +113,7 @@ body::after {
   animation-duration: 35s;
 }
 
+/* Основная карточка — с плавной анимацией */
 .card {
   max-width: 880px;
   width: 100%;
@@ -117,13 +121,14 @@ body::after {
   border-radius: 1rem;
   box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.35);
   overflow: hidden;
-  transition: none;
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.5s ease;
   position: relative;
   z-index: 2;
 }
 
 .card:hover {
-  transform: none;
+  transform: scale(1.01);
+  box-shadow: 0 30px 50px -15px rgba(0, 0, 0, 0.4);
 }
 
 .card-header {
@@ -193,7 +198,7 @@ textarea {
   font-family: 'Inter', monospace;
   font-size: 0.9rem;
   line-height: 1.5;
-  transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1), box-shadow 0.2s;
+  transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1), box-shadow 0.3s;
   background: #ffffff;
   resize: vertical;
   font-weight: 450;
