@@ -1,664 +1,94 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>FWB Processor | Обработчик авианакладных</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(135deg, #74ABE2, #5563DE);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.container {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  width: 100%;
+  max-width: 800px;
+}
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+  font-weight: 500;
+}
+p {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #555;
+  font-size: 16px;
+  line-height: 1.5;
+}
+textarea {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  resize: vertical;
+  font-family: 'Roboto', sans-serif;
+}
+#input {
+  height: 200px;
+}
+#output {
+  height: 80px;
+  background: #f2f2f2;
+  font-weight: 500;
+  color: #333;
+  resize: none;
+}
+.btn-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+button {
+  background: #5563DE;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 12px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin: 5px;
+}
+button:hover {
+  background: #4453c7;
+}
+#notification {
+  text-align: center;
+  font-size: 16px;
+  color: #28a745;
+  margin-top: 10px;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+#notification.show {
+  opacity: 1;
+}
 
-    body {
-      font-family: 'Inter', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-      position: relative;
-      background: linear-gradient(145deg, #5b8cbc 0%, #3a6d9e 50%, #2c5a82 100%);
-      overflow-x: hidden;
-    }
-
-    body::before,
-    body::after {
-      content: "\f072";
-      font-family: "Font Awesome 6 Free";
-      font-weight: 900;
-      position: fixed;
-      font-size: 140px;
-      color: rgba(255, 255, 255, 0.1);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    body::before {
-      top: 15%;
-      left: -40px;
-      transform: rotate(-15deg);
-    }
-
-    body::after {
-      bottom: 10%;
-      right: -30px;
-      transform: rotate(25deg) scaleX(-1);
-      font-size: 170px;
-    }
-
-    .airplane-bg {
-      position: fixed;
-      font-size: 100px;
-      color: rgba(255, 255, 255, 0.08);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .airplane-bg:nth-child(1) {
-      top: 40%;
-      left: 5%;
-      transform: rotate(10deg);
-    }
-
-    .airplane-bg:nth-child(2) {
-      bottom: 20%;
-      right: 8%;
-      transform: rotate(-20deg) scaleX(-1);
-      font-size: 120px;
-    }
-
-    .airplane-bg:nth-child(3) {
-      top: 65%;
-      left: 15%;
-      transform: rotate(45deg);
-      font-size: 80px;
-      opacity: 0.4;
-    }
-
-    .cloud {
-      position: fixed;
-      background: rgba(255, 255, 255, 0.25);
-      border-radius: 50%;
-      filter: blur(40px);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .cloud1 {
-      width: 350px;
-      height: 220px;
-      top: 8%;
-      left: -120px;
-    }
-
-    .cloud2 {
-      width: 450px;
-      height: 280px;
-      bottom: 0%;
-      right: -180px;
-    }
-
-    .cloud3 {
-      width: 280px;
-      height: 200px;
-      top: 55%;
-      left: 70%;
-    }
-
-    .card {
-      max-width: 880px;
-      width: 100%;
-      background: rgba(255, 255, 255, 0.96);
-      border-radius: 1rem;
-      box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.35);
-      overflow: hidden;
-      transition: transform 0.2s ease;
-      position: relative;
-      z-index: 2;
-    }
-
-    .card:hover {
-      transform: scale(1.01);
-    }
-
-    .card-header {
-      background: linear-gradient(135deg, #1a3f64, #0f2c48, #1e4a73);
-      background-size: 200% 200%;
-      padding: 1.6rem 2rem;
-      text-align: center;
-      color: white;
-      border-bottom: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .card-header h1 {
-      font-weight: 700;
-      font-size: 1.9rem;
-      letter-spacing: -0.3px;
-      margin: 0 0 0.5rem 0;
-      text-shadow: 0 2px 3px rgba(0,0,0,0.2);
-    }
-
-    .card-header .subtitle {
-      font-size: 0.9rem;
-      opacity: 0.9;
-      font-weight: 400;
-    }
-
-    .card-body {
-      padding: 2rem 2rem 1.8rem;
-    }
-
-    .input-group {
-      margin-bottom: 1.5rem;
-    }
-
-    label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 600;
-      color: #1f3e54;
-      margin-bottom: 0.6rem;
-      font-size: 0.9rem;
-    }
-
-    label i {
-      color: #2d6a8f;
-      font-size: 1rem;
-    }
-
-    textarea {
-      width: 100%;
-      padding: 1rem 1.2rem;
-      border: 1.5px solid #cbdbe6;
-      border-radius: 0.75rem;
-      font-family: 'Inter', monospace;
-      font-size: 0.9rem;
-      line-height: 1.5;
-      transition: all 0.25s;
-      background: #ffffff;
-      resize: vertical;
-      font-weight: 450;
-    }
-
-    textarea:focus {
-      outline: none;
-      border-color: #2d6a8f;
-      box-shadow: 0 0 0 3px rgba(45, 106, 143, 0.2);
-      background: #ffffff;
-    }
-
-    #input {
-      min-height: 180px;
-    }
-
-    #output {
-      background: #f9fdfe;
-      color: #1f3a4b;
-      font-weight: 500;
-      font-family: 'Inter', monospace;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    #output:focus {
-      background: #ffffff;
-    }
-
-    .button-panel {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-      margin: 1.8rem 0 1.5rem;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 0.8rem 1.5rem;
-      border-radius: 1rem;
-      font-weight: 600;
-      font-size: 0.9rem;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-      background: #f0f6fe;
-      color: #1e4b6e;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    }
-
-    .btn i {
-      font-size: 1rem;
-    }
-
-    .btn-primary {
-      background: linear-gradient(100deg, #2d6a8f, #1d4d6b);
-      color: white;
-      box-shadow: 0 4px 12px -4px rgba(30, 80, 110, 0.4);
-    }
-
-    .btn-primary:hover {
-      background: linear-gradient(100deg, #1d4d6b, #123a52);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 18px -6px rgba(0, 0, 0, 0.25);
-    }
-
-    .btn-secondary {
-      background: #eef4fc;
-      color: #1d4d6b;
-      border: 1px solid #cfe2f5;
-    }
-
-    .btn-secondary:hover {
-      background: #e2edf9;
-      transform: translateY(-1px);
-    }
-
-    .btn-warning {
-      background: #fff6f0;
-      color: #b85c1a;
-      border: 1px solid #ffe0cc;
-    }
-
-    .btn-warning:hover {
-      background: #ffefe3;
-      transform: translateY(-1px);
-    }
-
-    .btn:active {
-      transform: translateY(1px);
-    }
-
-    .message-area {
-      min-height: 62px;
-      margin-top: 0.75rem;
-    }
-
-    .alert {
-      padding: 0.85rem 1rem;
-      border-radius: 0.5rem;
-      font-size: 0.85rem;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      backdrop-filter: blur(4px);
-      animation: fadeSlide 0.3s ease forwards;
-    }
-
-    .alert-error {
-      background: #fee9e6;
-      color: #b13e2d;
-      border-left: 4px solid #e67e5c;
-    }
-
-    .toast-success {
-      position: fixed;
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: #1f5e48;
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border-radius: 2rem;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      box-shadow: 0 8px 20px -6px rgba(0,0,0,0.2);
-      z-index: 1000;
-      opacity: 0;
-      transition: opacity 0.25s, transform 0.25s;
-      pointer-events: none;
-      backdrop-filter: blur(4px);
-      background: #1f5e48dd;
-      font-size: 0.9rem;
-    }
-
-    .toast-success.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-      pointer-events: none;
-    }
-
-    @keyframes fadeSlide {
-      from {
-        opacity: 0;
-        transform: translateY(-8px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @media (max-width: 560px) {
-      .card-body {
-        padding: 1.5rem;
-      }
-      .btn {
-        padding: 0.6rem 1.2rem;
-        font-size: 0.8rem;
-      }
-      .card-header h1 {
-        font-size: 1.4rem;
-      }
-      .button-panel {
-        gap: 8px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="cloud cloud1"></div>
-  <div class="cloud cloud2"></div>
-  <div class="cloud cloud3"></div>
-  <i class="fas fa-plane airplane-bg"></i>
-  <i class="fas fa-plane airplane-bg"></i>
-  <i class="fas fa-plane airplane-bg"></i>
-
-<div class="card">
-  <div class="card-header">
-    <h1>FWB Обработчик</h1>
-    <div class="subtitle">Вставьте сообщение FWB и нажмите «Обработать». Итоговая строка появится ниже.</div>
-  </div>
-
-  <div class="card-body">
-    <div class="input-group">
-      <label><i class="fas fa-file-alt"></i> Исходное сообщение FWB</label>
-      <textarea id="input" placeholder="Вставьте полный текст FWB...&#10;Пример:&#10;SHP/ABC Corp&#10;FWB/...&#10;FLT/SU1234 15&#10;ISU/15JAN25"></textarea>
-    </div>
-
-    <div class="message-area" id="error-message-container"></div>
-
-    <div class="button-panel">
-      <button class="btn btn-primary" id="processButton"><i class="fas fa-cogs"></i> Обработать</button>
-      <button class="btn btn-secondary" id="copyButton"><i class="fas fa-copy"></i> Копировать</button>
-      <button class="btn btn-warning" id="clearButton"><i class="fas fa-eraser"></i> Очистить</button>
-    </div>
-
-    <div class="input-group">
-      <label><i class="fas fa-table-list"></i> Результат</label>
-      <textarea id="output" readonly placeholder="После обработки здесь появится результат..."></textarea>
-    </div>
-  </div>
-</div>
-
-<div id="toastMessage" class="toast-success">
-  <i class="fas fa-check-circle"></i> <span id="toastText">Скопировано</span>
-</div>
-
-<script>
-  (function() {
-    const inputArea = document.getElementById('input');
-    const outputArea = document.getElementById('output');
-    const processBtn = document.getElementById('processButton');
-    const copyBtn = document.getElementById('copyButton');
-    const clearBtn = document.getElementById('clearButton');
-    const errorContainer = document.getElementById('error-message-container');
-    const toastEl = document.getElementById('toastMessage');
-    const toastTextSpan = document.getElementById('toastText');
-
-    function escapeHtml(str) {
-      return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-      });
-    }
-
-    function showError(message) {
-      errorContainer.innerHTML = `
-        <div class="alert alert-error">
-          <i class="fas fa-exclamation-triangle"></i> 
-          <span>${escapeHtml(message)}</span>
-        </div>
-      `;
-      setTimeout(() => {
-        if (errorContainer.children[0]?.innerText.includes(message)) {
-          if (errorContainer.innerHTML.includes(message)) clearErrorOnly();
-        }
-      }, 5000);
-    }
-
-    function clearErrorOnly() {
-      if (errorContainer.innerHTML.trim() !== '') errorContainer.innerHTML = '';
-    }
-
-    function clearErrorsAndNotifications() {
-      errorContainer.innerHTML = '';
-    }
-
-    function showSuccessToast(message) {
-      toastTextSpan.innerText = message;
-      toastEl.classList.add('show');
-      setTimeout(() => toastEl.classList.remove('show'), 2800);
-    }
-
-    function monthToNumber(mmm) {
-      const months = { "JAN":"01","FEB":"02","MAR":"03","APR":"04","MAY":"05","JUN":"06","JUL":"07","AUG":"08","SEP":"09","OCT":"10","NOV":"11","DEC":"12" };
-      return months[mmm.toUpperCase()] || "01";
-    }
-
-    function extractMonthYearFromISU(textLines) {
-      const isuLine = textLines.find(line => line.startsWith("ISU/"));
-      if (!isuLine) return "";
-      const match = isuLine.match(/ISU\/\d{2}([A-Z]{3})(\d{2})/i);
-      if (match) {
-        const monthStr = monthToNumber(match[1]);
-        const yearShort = match[2];
-        return `${monthStr}.${yearShort}`;   // например "05.26"
-      }
-      return "";
-    }
-
-    function processMessage() {
-      clearErrorsAndNotifications();
-      const rawText = inputArea.value;
-      if (!rawText.trim()) {
-        showError("❌ Поле ввода пустое. Вставьте сообщение FWB.");
-        outputArea.value = "";
-        return;
-      }
-
-      if (!rawText.includes("FWB/") || !rawText.includes("FLT/")) {
-        showError("⚠️ Сообщение не содержит обязательных маркеров FWB/ или FLT/. Убедитесь в корректности.");
-        outputArea.value = "";
-        return;
-      }
-
-      const lines = rawText.split(/\r?\n/).map(l => l.trim()).filter(l => l !== "");
-      
-      let awbLine = lines.find(l => l.match(/\d{3}-\d+/) && (l.includes("FWB") || l.match(/\d{3}-\d{8}/))) || "";
-      if (!awbLine) awbLine = lines.find(l => l.match(/\d{3}-\d+/)) || "";
-      let awbMatch = awbLine.match(/\d{3}-(\d{8})/);
-      let awb = awbMatch ? awbMatch[1] : "";
-      if (!awb) {
-        showError("❌ Не удалось извлечь номер AWB (ожидается формат 000-12345678)");
-        outputArea.value = "";
-        return;
-      }
-
-      let depCode = "", destCode = "";
-      let restAfterAwb = awbLine.slice(awb.length + 4);
-      if (restAfterAwb.length >= 6) {
-        depCode = restAfterAwb.substring(0, 3).toUpperCase();
-        destCode = restAfterAwb.substring(3, 6).toUpperCase();
-      } else {
-        const anyDep = lines.find(l => l.match(/DEP\/[A-Z]{3}/i));
-        if (anyDep) {
-          const depMatch = anyDep.match(/DEP\/([A-Z]{3})/i);
-          if (depMatch) depCode = depMatch[1].toUpperCase();
-        }
-        const anyDest = lines.find(l => l.match(/DEST\/[A-Z]{3}/i));
-        if (anyDest) {
-          const destMatch = anyDest.match(/DEST\/([A-Z]{3})/i);
-          if (destMatch) destCode = destMatch[1].toUpperCase();
-        }
-      }
-
-      let shipper = "Неизвестно";
-      const shipperIdx = lines.findIndex(l => l.startsWith("SHP"));
-      if (shipperIdx !== -1 && shipperIdx + 1 < lines.length) {
-        let rawShipper = lines[shipperIdx + 1].replace(/\//g, "").trim();
-        if (rawShipper) shipper = rawShipper;
-      } else {
-        const shipperInline = lines.find(l => l.match(/^SHP\/.+$/));
-        if (shipperInline) {
-          let val = shipperInline.replace(/^SHP\//, "").trim();
-          if (val) shipper = val;
-        }
-      }
-
-      let piecesMatch = awbLine.match(/\/T(\d+)/);
-      let pieces = piecesMatch ? piecesMatch[1] : "1";
-      
-      let weightMatch = awbLine.match(/K([\d.]+)/);
-      let actualWeight = weightMatch ? parseFloat(weightMatch[1]) : 0;
-      
-      let mcMatch = awbLine.match(/MC([\d.]+)/);
-      let volume = mcMatch ? parseFloat(mcMatch[1]) : 0;
-      let volumeWeight = Math.ceil(volume * 166.666 * 2) / 2;
-      
-      let chargeableWeight = Math.max(actualWeight, volumeWeight);
-      if (chargeableWeight < 25) chargeableWeight = 25;
-      
-      const formattedActualWeight = actualWeight.toFixed(1).replace(".", ",");
-      const formattedChargeableWeight = chargeableWeight.toFixed(1).replace(".", ",");
-      const formattedVolume = volume.toFixed(2).replace(".", ",");
-      
-      let ctMatch = rawText.match(/\/CT([\d.]+)/);
-      let ctFreight = ctMatch ? ctMatch[1].replace(".", ",") : "0,00";
-      
-      let sphLine = lines.find(l => l.startsWith("SPH/"));
-      let sphTrigger = sphLine ? sphLine.replace("SPH/", "").trim() : "Нет";
-      
-      const fltLine = lines.find(l => l.startsWith("FLT/"));
-      let flightNumbers = [];
-      let flightDays = [];
-      
-      if (fltLine) {
-        let parts = fltLine.split("/");
-        for (let i = 1; i < parts.length; i++) {
-          let segment = parts[i].trim();
-          if (segment.match(/[A-Z]{2,3}\d+/i)) {
-            let numOnly = segment.replace(/[^\d]/g, "");
-            if (numOnly) flightNumbers.push(numOnly);
-            if (i+1 < parts.length && /^\d{1,2}$/.test(parts[i+1].trim())) {
-              flightDays.push(parts[i+1].trim());
-              i++;
-            } else if (i+1 < parts.length && parts[i+1].trim().match(/^\d{1,2}[A-Z]{3}/i)) {
-              let complexDate = parts[i+1].trim();
-              let dayMatch = complexDate.match(/^(\d{1,2})/);
-              if (dayMatch) flightDays.push(dayMatch[1]);
-              i++;
-            }
-          } else if (/^\d{1,2}$/.test(segment) && flightNumbers.length > flightDays.length) {
-            flightDays.push(segment);
-          }
-        }
-        if (flightDays.length === 0) {
-          const dayLine = lines.find(l => l.match(/DAY\/(\d{1,2})/i));
-          if (dayLine) {
-            const dayMatch = dayLine.match(/DAY\/(\d{1,2})/i);
-            if (dayMatch) flightDays.push(dayMatch[1]);
-          }
-        }
-      }
-      
-      // Получаем месяц и год из ISU
-      let monthYear = extractMonthYearFromISU(lines);  // формат "MM.YY"
-      let monthOnly = monthYear ? monthYear.split('.')[0] : "";
-      let yearOnly = monthYear ? monthYear.split('.')[1] : "";
-      
-      // Формируем даты в зависимости от количества рейсов
-      let formattedFlightDates = "";
-      if (flightDays.length === 1) {
-        // Один рейс — дата с годом
-        const day = flightDays[0];
-        if (monthYear) {
-          formattedFlightDates = `${day}.${monthYear}`;  // "03.05.26"
-        } else {
-          // Если нет ISU, выводим только день (или день с ??)
-          formattedFlightDates = `${day}.??`;
-        }
-      } else if (flightDays.length >= 2) {
-        // Несколько рейсов — даты без года, только день.месяц
-        if (monthOnly) {
-          formattedFlightDates = flightDays.map(day => `${day}.${monthOnly}`).join("/");
-        } else {
-          // Если месяца нет, выводим только дни
-          formattedFlightDates = flightDays.join("/");
-        }
-      } else {
-        formattedFlightDates = "XX";
-      }
-      
-      let flightNumbersStr = flightNumbers.length ? flightNumbers.join("/") : "";
-      if (flightNumbersStr === "" && fltLine) {
-        let fallbackMatch = fltLine.match(/\b([A-Z]{2,3}\d+)\b/i);
-        if (fallbackMatch) flightNumbersStr = fallbackMatch[1].replace(/[^\d]/g, "");
-      }
-      
-      const resultRow = [
-        awb, "1", shipper,
-        depCode || "XXX", destCode || "XXX",
-        ctFreight, pieces,
-        formattedActualWeight, formattedChargeableWeight, formattedVolume,
-        sphTrigger, formattedFlightDates, flightNumbersStr || "0"
-      ].join("\t");
-      
-      outputArea.value = resultRow;
-      if (!resultRow.trim()) {
-        showError("⚠️ Результат пуст, возможно недостаточно данных в FWB.");
-      }
-    }
-    
-    function copyResult() {
-      if (!outputArea.value.trim()) {
-        showError("❌ Нечего копировать. Сначала обработайте сообщение.");
-        return;
-      }
-      navigator.clipboard.writeText(outputArea.value).then(() => {
-        showSuccessToast("✅ Результат скопирован в буфер!");
-      }).catch(() => {
-        showError("❌ Ошибка доступа к буферу обмена.");
-      });
-    }
-    
-    function clearAll() {
-      inputArea.value = "";
-      outputArea.value = "";
-      clearErrorsAndNotifications();
-    }
-    
-    function onKeyHandler(e) {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-        e.preventDefault();
-        processMessage();
-      }
-    }
-    
-    function init() {
-      processBtn.addEventListener('click', processMessage);
-      copyBtn.addEventListener('click', copyResult);
-      clearBtn.addEventListener('click', clearAll);
-      inputArea.addEventListener('keydown', onKeyHandler);
-      inputArea.addEventListener('input', () => {
-        if (errorContainer.innerHTML.trim() !== "") clearErrorsAndNotifications();
-      });
-    }
-    
-    init();
-  })();
-</script>
-</body>
-</html>
+/* Сообщение об ошибке */
+#error-message {
+  text-align: center;
+  color: #d32f2f;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  display: none;
+}
