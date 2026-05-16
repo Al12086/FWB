@@ -16,7 +16,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Фоновые самолёты и облака с анимацией */
 body::before,
 body::after {
   content: "\f072";
@@ -33,7 +32,6 @@ body::before {
   top: 15%;
   left: -40px;
   transform: rotate(-15deg);
-  animation: floatPlane 22s ease-in-out infinite;
 }
 
 body::after {
@@ -41,7 +39,6 @@ body::after {
   right: -30px;
   transform: rotate(25deg) scaleX(-1);
   font-size: 170px;
-  animation: floatPlane 28s ease-in-out infinite reverse;
 }
 
 .airplane-bg {
@@ -113,7 +110,6 @@ body::after {
   animation-duration: 35s;
 }
 
-/* Карточка — без анимации увеличения */
 .card {
   max-width: 880px;
   width: 100%;
@@ -123,11 +119,6 @@ body::after {
   overflow: hidden;
   position: relative;
   z-index: 2;
-}
-
-/* Убираем всякое масштабирование */
-.card:hover {
-  transform: none;
 }
 
 .card-header {
