@@ -113,7 +113,7 @@ body::after {
   animation-duration: 35s;
 }
 
-/* Основная карточка — с плавной анимацией */
+/* Карточка — без анимации увеличения */
 .card {
   max-width: 880px;
   width: 100%;
@@ -121,14 +121,13 @@ body::after {
   border-radius: 1rem;
   box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.35);
   overflow: hidden;
-  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.5s ease;
   position: relative;
   z-index: 2;
 }
 
+/* Убираем всякое масштабирование */
 .card:hover {
-  transform: scale(1.01);
-  box-shadow: 0 30px 50px -15px rgba(0, 0, 0, 0.4);
+  transform: none;
 }
 
 .card-header {
