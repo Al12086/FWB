@@ -107,13 +107,15 @@ body::after {
   border-radius: 1rem;
   box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.35);
   overflow: hidden;
-  transition: transform 0.2s ease;
+  /* Убираем transition, связанную с transform, чтобы не было масштабирования */
+  transition: none;
   position: relative;
   z-index: 2;
 }
 
+/* Убираем масштабирование при наведении */
 .card:hover {
-  transform: scale(1.01);
+  transform: none;
 }
 
 .card-header {
@@ -190,7 +192,7 @@ textarea:focus {
 }
 
 #input {
-  min-height: 270px;   /* увеличено в 1.5 раза (было 180px) */
+  min-height: 270px;
 }
 
 #output {
@@ -281,8 +283,10 @@ textarea:focus {
   display: flex;
   align-items: center;
   gap: 10px;
-  backdrop-filter: blur(4px);
+  /* убираем backdrop-filter, чтобы не было размытия при анимации */
+  /* backdrop-filter: blur(4px); */
   animation: fadeSlide 0.3s ease forwards;
+  background: #fee9e6; /* у ошибки был свой фон, оставим его */
 }
 
 .alert-error {
@@ -309,7 +313,8 @@ textarea:focus {
   opacity: 0;
   transition: opacity 0.25s, transform 0.25s;
   pointer-events: none;
-  backdrop-filter: blur(4px);
+  /* убираем backdrop-filter */
+  /* backdrop-filter: blur(4px); */
   background: #1f5e48dd;
   font-size: 0.9rem;
 }
