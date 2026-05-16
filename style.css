@@ -16,9 +16,8 @@ body {
   overflow-x: hidden;
 }
 
-/* Декоративные самолёты и облака (без изменений) */
-body::before,
-body::after {
+/* Декоративные самолёты и облака (оставлены как есть) */
+body::before, body::after {
   content: "\f072";
   font-family: "Font Awesome 6 Free";
   font-weight: 900;
@@ -28,17 +27,9 @@ body::after {
   pointer-events: none;
   z-index: 0;
 }
-body::before {
-  top: 15%;
-  left: -40px;
-  transform: rotate(-15deg);
-}
-body::after {
-  bottom: 10%;
-  right: -30px;
-  transform: rotate(25deg) scaleX(-1);
-  font-size: 170px;
-}
+body::before { top: 15%; left: -40px; transform: rotate(-15deg); }
+body::after { bottom: 10%; right: -30px; transform: rotate(25deg) scaleX(-1); font-size: 170px; }
+
 .airplane-bg {
   position: fixed;
   font-size: 100px;
@@ -49,6 +40,7 @@ body::after {
 .airplane-bg:nth-child(1) { top: 40%; left: 5%; transform: rotate(10deg); }
 .airplane-bg:nth-child(2) { bottom: 20%; right: 8%; transform: rotate(-20deg) scaleX(-1); font-size: 120px; }
 .airplane-bg:nth-child(3) { top: 65%; left: 15%; transform: rotate(45deg); font-size: 80px; opacity: 0.4; }
+
 .cloud {
   position: fixed;
   background: rgba(255, 255, 255, 0.25);
@@ -61,11 +53,11 @@ body::after {
 .cloud2 { width: 450px; height: 280px; bottom: 0%; right: -180px; }
 .cloud3 { width: 280px; height: 200px; top: 55%; left: 70%; }
 
-/* Основная карточка — почти на весь экран */
+/* Карточка на весь экран */
 .card {
   max-width: 1000px;
   width: 100%;
-  height: 90vh;                 /* высота 90% от окна */
+  height: 90vh;
   background: rgba(255, 255, 255, 0.96);
   border-radius: 1rem;
   box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.35);
@@ -74,67 +66,62 @@ body::after {
   position: relative;
   z-index: 2;
   display: flex;
-  flex-direction: column;      /* вертикальное растяжение */
+  flex-direction: column;
 }
-.card:hover {
-  transform: scale(1.01);
-}
+.card:hover { transform: scale(1.01); }
 
 .card-header {
-  flex-shrink: 0;              /* шапка не сжимается */
+  flex-shrink: 0;
   background: linear-gradient(135deg, #1a3f64, #0f2c48, #1e4a73);
-  background-size: 200% 200%;
-  padding: 1.2rem 2rem;
+  padding: 1rem 2rem;
   text-align: center;
   color: white;
   border-bottom: 1px solid rgba(255,255,255,0.2);
 }
-
 .card-header h1 {
   font-weight: 700;
   font-size: 1.7rem;
-  letter-spacing: -0.3px;
-  margin: 0 0 0.3rem 0;
-  text-shadow: 0 2px 3px rgba(0,0,0,0.2);
+  margin: 0 0 0.2rem 0;
 }
 .card-header .subtitle {
   font-size: 0.85rem;
   opacity: 0.9;
-  font-weight: 400;
 }
 
 .card-body {
-  flex: 1;                     /* занимает всё оставшееся место */
-  padding: 1.5rem 2rem;
+  flex: 1;
+  padding: 1.2rem 2rem;
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
+  overflow-y: auto; /* если контент переполняет, будет скролл */
 }
 
-/* Группы полей и сами поля */
+/* Группы полей: верхнее — растягивается, нижнее — фиксировано */
 .input-group {
   display: flex;
   flex-direction: column;
-  flex: 1;                    /* по умолчанию поля занимают равное место */
 }
 #input-group-top {
-  flex: 2;                    /* верхнее поле чуть больше */
+  flex: 1;               /* занимает всё свободное место */
 }
 #output-group {
-  flex: 1;
+  flex-shrink: 0;
+  margin-top: 0;
 }
+
 label {
   display: flex;
   align-items: center;
   gap: 8px;
   font-weight: 600;
   color: #1f3e54;
-  margin-bottom: 0.4rem;
-  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+  font-size: 0.85rem;
 }
 textarea {
   width: 100%;
-  padding: 0.8rem 1rem;
+  padding: 0.7rem 1rem;
   border: 1.5px solid #cbdbe6;
   border-radius: 0.75rem;
   font-family: 'Inter', monospace;
@@ -143,91 +130,68 @@ textarea {
   transition: all 0.25s;
   background: #ffffff;
   resize: vertical;
-  font-weight: 450;
 }
 textarea:focus {
   outline: none;
   border-color: #2d6a8f;
   box-shadow: 0 0 0 3px rgba(45, 106, 143, 0.2);
-  background: #ffffff;
 }
 #input {
-  flex: 1;                   /* поле ввода растягивается */
-  min-height: 0;             /* отключаем минимальную высоту */
+  flex: 1;               /* растягивается внутри своей группы */
+  min-height: 0;
 }
 #output {
+  height: 70px;          /* достаточно для 2-3 строк */
   background: #f9fdfe;
   color: #1f3a4b;
   font-weight: 500;
-  flex: 1;
-  min-height: 0;
+  resize: none;          /* можно запретить изменение размера */
 }
+
 /* Блок ошибок — компактный */
 .message-area {
   margin: 0;
   min-height: 0;
 }
 .alert {
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 1rem;
   border-radius: 0.5rem;
   font-size: 0.8rem;
-  font-weight: 500;
   display: flex;
   align-items: center;
   gap: 8px;
 }
-/* Панель кнопок — фиксированный отступ */
+
+/* Кнопки с одинаковыми отступами */
 .button-panel {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 12px;
-  margin: 0.6rem 0 0.4rem;
+  margin: 0.5rem 0 0.5rem;
   flex-shrink: 0;
 }
 .btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 0.6rem 1.3rem;
+  padding: 0.5rem 1.2rem;
   border-radius: 1rem;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   border: none;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
   background: #f0f6fe;
   color: #1e4b6e;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  transition: all 0.2s;
 }
-.btn i { font-size: 1rem; }
 .btn-primary {
   background: linear-gradient(100deg, #2d6a8f, #1d4d6b);
   color: white;
-  box-shadow: 0 4px 12px -4px rgba(30, 80, 110, 0.4);
 }
-.btn-primary:hover {
-  background: linear-gradient(100deg, #1d4d6b, #123a52);
-  transform: translateY(-2px);
-}
-.btn-secondary {
-  background: #eef4fc;
-  color: #1d4d6b;
-  border: 1px solid #cfe2f5;
-}
-.btn-secondary:hover {
-  background: #e2edf9;
-  transform: translateY(-1px);
-}
-.btn-warning {
-  background: #fff6f0;
-  color: #b85c1a;
-  border: 1px solid #ffe0cc;
-}
-.btn-warning:hover {
-  background: #ffefe3;
-  transform: translateY(-1px);
-}
+.btn-primary:hover { background: linear-gradient(100deg, #1d4d6b, #123a52); transform: translateY(-2px); }
+.btn-secondary:hover { background: #e2edf9; transform: translateY(-1px); }
+.btn-warning:hover { background: #ffefe3; transform: translateY(-1px); }
 .btn:active { transform: translateY(1px); }
 
 .toast-success {
@@ -235,35 +199,25 @@ textarea:focus {
   bottom: 2rem;
   left: 50%;
   transform: translateX(-50%) translateY(20px);
-  background: #1f5e48;
+  background: #1f5e48dd;
+  backdrop-filter: blur(4px);
   color: white;
-  padding: 0.6rem 1.2rem;
+  padding: 0.5rem 1.2rem;
   border-radius: 2rem;
-  font-weight: 500;
   display: flex;
-  align-items: center;
   gap: 12px;
   z-index: 1000;
   opacity: 0;
-  transition: opacity 0.25s, transform 0.25s;
+  transition: 0.25s;
   pointer-events: none;
-  backdrop-filter: blur(4px);
-  background: #1f5e48dd;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
-.toast-success.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
+.toast-success.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-@keyframes fadeSlide {
-  from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+@keyframes fadeSlide { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
 
 @media (max-width: 680px) {
-  .card-body { padding: 1rem 1.5rem; }
-  .btn { padding: 0.5rem 1rem; font-size: 0.8rem; }
+  .card-body { padding: 1rem; }
+  .btn { padding: 0.4rem 0.9rem; font-size: 0.8rem; }
   .card-header h1 { font-size: 1.4rem; }
-  .card-header { padding: 1rem; }
 }
