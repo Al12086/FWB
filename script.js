@@ -178,7 +178,6 @@
     
     let monthYear = extractMonthYearFromISU(lines);
     let monthOnly = monthYear ? monthYear.split('.')[0] : "";
-    let yearOnly = monthYear ? monthYear.split('.')[1] : "";
     
     let formattedFlightDates = "";
     if (flightDays.length === 1) {
