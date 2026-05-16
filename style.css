@@ -10,12 +10,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
+  padding: 1rem;
   position: relative;
   background: linear-gradient(145deg, #5b8cbc 0%, #3a6d9e 50%, #2c5a82 100%);
   overflow-x: hidden;
 }
 
+/* Декоративные самолёты и облака (без изменений) */
 body::before,
 body::after {
   content: "\f072";
@@ -27,20 +28,17 @@ body::after {
   pointer-events: none;
   z-index: 0;
 }
-
 body::before {
   top: 15%;
   left: -40px;
   transform: rotate(-15deg);
 }
-
 body::after {
   bottom: 10%;
   right: -30px;
   transform: rotate(25deg) scaleX(-1);
   font-size: 170px;
 }
-
 .airplane-bg {
   position: fixed;
   font-size: 100px;
@@ -48,28 +46,9 @@ body::after {
   pointer-events: none;
   z-index: 0;
 }
-
-.airplane-bg:nth-child(1) {
-  top: 40%;
-  left: 5%;
-  transform: rotate(10deg);
-}
-
-.airplane-bg:nth-child(2) {
-  bottom: 20%;
-  right: 8%;
-  transform: rotate(-20deg) scaleX(-1);
-  font-size: 120px;
-}
-
-.airplane-bg:nth-child(3) {
-  top: 65%;
-  left: 15%;
-  transform: rotate(45deg);
-  font-size: 80px;
-  opacity: 0.4;
-}
-
+.airplane-bg:nth-child(1) { top: 40%; left: 5%; transform: rotate(10deg); }
+.airplane-bg:nth-child(2) { bottom: 20%; right: 8%; transform: rotate(-20deg) scaleX(-1); font-size: 120px; }
+.airplane-bg:nth-child(3) { top: 65%; left: 15%; transform: rotate(45deg); font-size: 80px; opacity: 0.4; }
 .cloud {
   position: fixed;
   background: rgba(255, 255, 255, 0.25);
@@ -78,31 +57,15 @@ body::after {
   pointer-events: none;
   z-index: 0;
 }
+.cloud1 { width: 350px; height: 220px; top: 8%; left: -120px; }
+.cloud2 { width: 450px; height: 280px; bottom: 0%; right: -180px; }
+.cloud3 { width: 280px; height: 200px; top: 55%; left: 70%; }
 
-.cloud1 {
-  width: 350px;
-  height: 220px;
-  top: 8%;
-  left: -120px;
-}
-
-.cloud2 {
-  width: 450px;
-  height: 280px;
-  bottom: 0%;
-  right: -180px;
-}
-
-.cloud3 {
-  width: 280px;
-  height: 200px;
-  top: 55%;
-  left: 70%;
-}
-
+/* Основная карточка — почти на весь экран */
 .card {
-  max-width: 880px;
+  max-width: 1000px;
   width: 100%;
+  height: 90vh;                 /* высота 90% от окна */
   background: rgba(255, 255, 255, 0.96);
   border-radius: 1rem;
   box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.35);
@@ -110,16 +73,18 @@ body::after {
   transition: transform 0.2s ease;
   position: relative;
   z-index: 2;
+  display: flex;
+  flex-direction: column;      /* вертикальное растяжение */
 }
-
 .card:hover {
   transform: scale(1.01);
 }
 
 .card-header {
+  flex-shrink: 0;              /* шапка не сжимается */
   background: linear-gradient(135deg, #1a3f64, #0f2c48, #1e4a73);
   background-size: 200% 200%;
-  padding: 1.6rem 2rem;
+  padding: 1.2rem 2rem;
   text-align: center;
   color: white;
   border-bottom: 1px solid rgba(255,255,255,0.2);
@@ -127,49 +92,49 @@ body::after {
 
 .card-header h1 {
   font-weight: 700;
-  font-size: 1.9rem;
+  font-size: 1.7rem;
   letter-spacing: -0.3px;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.3rem 0;
   text-shadow: 0 2px 3px rgba(0,0,0,0.2);
 }
-
 .card-header .subtitle {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   opacity: 0.9;
   font-weight: 400;
 }
 
 .card-body {
-  padding: 2rem 2rem 1.8rem;
+  flex: 1;                     /* занимает всё оставшееся место */
+  padding: 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
 }
 
+/* Группы полей и сами поля */
 .input-group {
-  margin-bottom: 0;          /* Убираем нижний отступ у всех групп */
+  display: flex;
+  flex-direction: column;
+  flex: 1;                    /* по умолчанию поля занимают равное место */
 }
-
-.message-area {
-  margin: 0;                 /* Убираем отступы у блока ошибок */
-  min-height: 0;             /* Убираем минимальную высоту, чтобы блок схлопывался */
+#input-group-top {
+  flex: 2;                    /* верхнее поле чуть больше */
 }
-
+#output-group {
+  flex: 1;
+}
 label {
   display: flex;
   align-items: center;
   gap: 8px;
   font-weight: 600;
   color: #1f3e54;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.4rem;
   font-size: 0.9rem;
 }
-
-label i {
-  color: #2d6a8f;
-  font-size: 1rem;
-}
-
 textarea {
   width: 100%;
-  padding: 1rem 1.2rem;
+  padding: 0.8rem 1rem;
   border: 1.5px solid #cbdbe6;
   border-radius: 0.75rem;
   font-family: 'Inter', monospace;
@@ -180,45 +145,51 @@ textarea {
   resize: vertical;
   font-weight: 450;
 }
-
 textarea:focus {
   outline: none;
   border-color: #2d6a8f;
   box-shadow: 0 0 0 3px rgba(45, 106, 143, 0.2);
   background: #ffffff;
 }
-
 #input {
-  min-height: 180px;
+  flex: 1;                   /* поле ввода растягивается */
+  min-height: 0;             /* отключаем минимальную высоту */
 }
-
 #output {
   background: #f9fdfe;
   color: #1f3a4b;
   font-weight: 500;
-  font-family: 'Inter', monospace;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: 0.2s;
+  flex: 1;
+  min-height: 0;
 }
-
-#output:focus {
-  background: #ffffff;
+/* Блок ошибок — компактный */
+.message-area {
+  margin: 0;
+  min-height: 0;
 }
-
+.alert {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* Панель кнопок — фиксированный отступ */
 .button-panel {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 12px;
-  margin: 1rem 0 1rem 0;    /* Одинаковые отступы сверху и снизу */
+  margin: 0.6rem 0 0.4rem;
+  flex-shrink: 0;
 }
-
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 0.8rem 1.5rem;
+  gap: 8px;
+  padding: 0.6rem 1.3rem;
   border-radius: 1rem;
   font-weight: 600;
   font-size: 0.9rem;
@@ -229,66 +200,35 @@ textarea:focus {
   color: #1e4b6e;
   box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
-
-.btn i {
-  font-size: 1rem;
-}
-
+.btn i { font-size: 1rem; }
 .btn-primary {
   background: linear-gradient(100deg, #2d6a8f, #1d4d6b);
   color: white;
   box-shadow: 0 4px 12px -4px rgba(30, 80, 110, 0.4);
 }
-
 .btn-primary:hover {
   background: linear-gradient(100deg, #1d4d6b, #123a52);
   transform: translateY(-2px);
-  box-shadow: 0 8px 18px -6px rgba(0, 0, 0, 0.25);
 }
-
 .btn-secondary {
   background: #eef4fc;
   color: #1d4d6b;
   border: 1px solid #cfe2f5;
 }
-
 .btn-secondary:hover {
   background: #e2edf9;
   transform: translateY(-1px);
 }
-
 .btn-warning {
   background: #fff6f0;
   color: #b85c1a;
   border: 1px solid #ffe0cc;
 }
-
 .btn-warning:hover {
   background: #ffefe3;
   transform: translateY(-1px);
 }
-
-.btn:active {
-  transform: translateY(1px);
-}
-
-.alert {
-  padding: 0.85rem 1rem;
-  border-radius: 0.5rem;
-  font-size: 0.85rem;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  backdrop-filter: blur(4px);
-  animation: fadeSlide 0.3s ease forwards;
-}
-
-.alert-error {
-  background: #fee9e6;
-  color: #b13e2d;
-  border-left: 4px solid #e67e5c;
-}
+.btn:active { transform: translateY(1px); }
 
 .toast-success {
   position: fixed;
@@ -297,13 +237,12 @@ textarea:focus {
   transform: translateX(-50%) translateY(20px);
   background: #1f5e48;
   color: white;
-  padding: 0.75rem 1.5rem;
+  padding: 0.6rem 1.2rem;
   border-radius: 2rem;
   font-weight: 500;
   display: flex;
   align-items: center;
   gap: 12px;
-  box-shadow: 0 8px 20px -6px rgba(0,0,0,0.2);
   z-index: 1000;
   opacity: 0;
   transition: opacity 0.25s, transform 0.25s;
@@ -312,36 +251,19 @@ textarea:focus {
   background: #1f5e48dd;
   font-size: 0.9rem;
 }
-
 .toast-success.show {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
-  pointer-events: none;
 }
 
 @keyframes fadeSlide {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-@media (max-width: 560px) {
-  .card-body {
-    padding: 1.5rem;
-  }
-  .btn {
-    padding: 0.6rem 1.2rem;
-    font-size: 0.8rem;
-  }
-  .card-header h1 {
-    font-size: 1.4rem;
-  }
-  .button-panel {
-    gap: 8px;
-  }
+@media (max-width: 680px) {
+  .card-body { padding: 1rem 1.5rem; }
+  .btn { padding: 0.5rem 1rem; font-size: 0.8rem; }
+  .card-header h1 { font-size: 1.4rem; }
+  .card-header { padding: 1rem; }
 }
