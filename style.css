@@ -10,14 +10,14 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: 1.5rem;
   position: relative;
   background: linear-gradient(145deg, #5b8cbc 0%, #3a6d9e 50%, #2c5a82 100%);
   overflow-x: hidden;
 }
 
-/* Декоративные самолёты и облака (оставлены как есть) */
-body::before, body::after {
+body::before,
+body::after {
   content: "\f072";
   font-family: "Font Awesome 6 Free";
   font-weight: 900;
@@ -27,8 +27,19 @@ body::before, body::after {
   pointer-events: none;
   z-index: 0;
 }
-body::before { top: 15%; left: -40px; transform: rotate(-15deg); }
-body::after { bottom: 10%; right: -30px; transform: rotate(25deg) scaleX(-1); font-size: 170px; }
+
+body::before {
+  top: 15%;
+  left: -40px;
+  transform: rotate(-15deg);
+}
+
+body::after {
+  bottom: 10%;
+  right: -30px;
+  transform: rotate(25deg) scaleX(-1);
+  font-size: 170px;
+}
 
 .airplane-bg {
   position: fixed;
@@ -37,9 +48,27 @@ body::after { bottom: 10%; right: -30px; transform: rotate(25deg) scaleX(-1); fo
   pointer-events: none;
   z-index: 0;
 }
-.airplane-bg:nth-child(1) { top: 40%; left: 5%; transform: rotate(10deg); }
-.airplane-bg:nth-child(2) { bottom: 20%; right: 8%; transform: rotate(-20deg) scaleX(-1); font-size: 120px; }
-.airplane-bg:nth-child(3) { top: 65%; left: 15%; transform: rotate(45deg); font-size: 80px; opacity: 0.4; }
+
+.airplane-bg:nth-child(1) {
+  top: 40%;
+  left: 5%;
+  transform: rotate(10deg);
+}
+
+.airplane-bg:nth-child(2) {
+  bottom: 20%;
+  right: 8%;
+  transform: rotate(-20deg) scaleX(-1);
+  font-size: 120px;
+}
+
+.airplane-bg:nth-child(3) {
+  top: 65%;
+  left: 15%;
+  transform: rotate(45deg);
+  font-size: 80px;
+  opacity: 0.4;
+}
 
 .cloud {
   position: fixed;
@@ -49,15 +78,31 @@ body::after { bottom: 10%; right: -30px; transform: rotate(25deg) scaleX(-1); fo
   pointer-events: none;
   z-index: 0;
 }
-.cloud1 { width: 350px; height: 220px; top: 8%; left: -120px; }
-.cloud2 { width: 450px; height: 280px; bottom: 0%; right: -180px; }
-.cloud3 { width: 280px; height: 200px; top: 55%; left: 70%; }
 
-/* Карточка на весь экран */
+.cloud1 {
+  width: 350px;
+  height: 220px;
+  top: 8%;
+  left: -120px;
+}
+
+.cloud2 {
+  width: 450px;
+  height: 280px;
+  bottom: 0%;
+  right: -180px;
+}
+
+.cloud3 {
+  width: 280px;
+  height: 200px;
+  top: 55%;
+  left: 70%;
+}
+
 .card {
-  max-width: 1000px;
+  max-width: 880px;
   width: 100%;
-  height: 90vh;
   background: rgba(255, 255, 255, 0.96);
   border-radius: 1rem;
   box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.35);
@@ -65,49 +110,46 @@ body::after { bottom: 10%; right: -30px; transform: rotate(25deg) scaleX(-1); fo
   transition: transform 0.2s ease;
   position: relative;
   z-index: 2;
-  display: flex;
-  flex-direction: column;
 }
-.card:hover { transform: scale(1.01); }
+
+.card:hover {
+  transform: scale(1.01);
+}
 
 .card-header {
-  flex-shrink: 0;
   background: linear-gradient(135deg, #1a3f64, #0f2c48, #1e4a73);
-  padding: 1rem 2rem;
+  background-size: 200% 200%;
+  padding: 1.6rem 2rem;
   text-align: center;
   color: white;
   border-bottom: 1px solid rgba(255,255,255,0.2);
 }
+
 .card-header h1 {
   font-weight: 700;
-  font-size: 1.7rem;
-  margin: 0 0 0.2rem 0;
+  font-size: 1.9rem;
+  letter-spacing: -0.3px;
+  margin: 0 0 0.5rem 0;
+  text-shadow: 0 2px 3px rgba(0,0,0,0.2);
 }
+
 .card-header .subtitle {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   opacity: 0.9;
+  font-weight: 400;
 }
 
 .card-body {
-  flex: 1;
-  padding: 1.2rem 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-  overflow-y: auto; /* если контент переполняет, будет скролл */
+  padding: 2rem 2rem 1.8rem;
 }
 
-/* Группы полей: верхнее — растягивается, нижнее — фиксировано */
 .input-group {
-  display: flex;
-  flex-direction: column;
+  margin-bottom: 0;          /* Убираем нижний отступ у всех групп */
 }
-#input-group-top {
-  flex: 1;               /* занимает всё свободное место */
-}
-#output-group {
-  flex-shrink: 0;
-  margin-top: 0;
+
+.message-area {
+  margin: 0;                 /* Убираем отступы у блока ошибок */
+  min-height: 0;             /* Убираем минимальную высоту, чтобы блок схлопывался */
 }
 
 label {
@@ -116,12 +158,18 @@ label {
   gap: 8px;
   font-weight: 600;
   color: #1f3e54;
-  margin-bottom: 0.3rem;
-  font-size: 0.85rem;
+  margin-bottom: 0.6rem;
+  font-size: 0.9rem;
 }
+
+label i {
+  color: #2d6a8f;
+  font-size: 1rem;
+}
+
 textarea {
   width: 100%;
-  padding: 0.7rem 1rem;
+  padding: 1rem 1.2rem;
   border: 1.5px solid #cbdbe6;
   border-radius: 0.75rem;
   font-family: 'Inter', monospace;
@@ -130,94 +178,170 @@ textarea {
   transition: all 0.25s;
   background: #ffffff;
   resize: vertical;
+  font-weight: 450;
 }
+
 textarea:focus {
   outline: none;
   border-color: #2d6a8f;
   box-shadow: 0 0 0 3px rgba(45, 106, 143, 0.2);
+  background: #ffffff;
 }
+
 #input {
-  flex: 1;               /* растягивается внутри своей группы */
-  min-height: 0;
+  min-height: 180px;
 }
+
 #output {
-  height: 70px;          /* достаточно для 2-3 строк */
   background: #f9fdfe;
   color: #1f3a4b;
   font-weight: 500;
-  resize: none;          /* можно запретить изменение размера */
+  font-family: 'Inter', monospace;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
-/* Блок ошибок — компактный */
-.message-area {
-  margin: 0;
-  min-height: 0;
-}
-.alert {
-  padding: 0.4rem 1rem;
-  border-radius: 0.5rem;
-  font-size: 0.8rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+#output:focus {
+  background: #ffffff;
 }
 
-/* Кнопки с одинаковыми отступами */
 .button-panel {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 12px;
-  margin: 0.5rem 0 0.5rem;
-  flex-shrink: 0;
+  margin: 1rem 0 1rem 0;    /* Одинаковые отступы сверху и снизу */
 }
+
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 0.5rem 1.2rem;
+  gap: 10px;
+  padding: 0.8rem 1.5rem;
   border-radius: 1rem;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   border: none;
   cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
   background: #f0f6fe;
   color: #1e4b6e;
-  transition: all 0.2s;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
+
+.btn i {
+  font-size: 1rem;
+}
+
 .btn-primary {
   background: linear-gradient(100deg, #2d6a8f, #1d4d6b);
   color: white;
+  box-shadow: 0 4px 12px -4px rgba(30, 80, 110, 0.4);
 }
-.btn-primary:hover { background: linear-gradient(100deg, #1d4d6b, #123a52); transform: translateY(-2px); }
-.btn-secondary:hover { background: #e2edf9; transform: translateY(-1px); }
-.btn-warning:hover { background: #ffefe3; transform: translateY(-1px); }
-.btn:active { transform: translateY(1px); }
+
+.btn-primary:hover {
+  background: linear-gradient(100deg, #1d4d6b, #123a52);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px -6px rgba(0, 0, 0, 0.25);
+}
+
+.btn-secondary {
+  background: #eef4fc;
+  color: #1d4d6b;
+  border: 1px solid #cfe2f5;
+}
+
+.btn-secondary:hover {
+  background: #e2edf9;
+  transform: translateY(-1px);
+}
+
+.btn-warning {
+  background: #fff6f0;
+  color: #b85c1a;
+  border: 1px solid #ffe0cc;
+}
+
+.btn-warning:hover {
+  background: #ffefe3;
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.alert {
+  padding: 0.85rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  backdrop-filter: blur(4px);
+  animation: fadeSlide 0.3s ease forwards;
+}
+
+.alert-error {
+  background: #fee9e6;
+  color: #b13e2d;
+  border-left: 4px solid #e67e5c;
+}
 
 .toast-success {
   position: fixed;
   bottom: 2rem;
   left: 50%;
   transform: translateX(-50%) translateY(20px);
-  background: #1f5e48dd;
-  backdrop-filter: blur(4px);
+  background: #1f5e48;
   color: white;
-  padding: 0.5rem 1.2rem;
+  padding: 0.75rem 1.5rem;
   border-radius: 2rem;
+  font-weight: 500;
   display: flex;
+  align-items: center;
   gap: 12px;
+  box-shadow: 0 8px 20px -6px rgba(0,0,0,0.2);
   z-index: 1000;
   opacity: 0;
-  transition: 0.25s;
+  transition: opacity 0.25s, transform 0.25s;
   pointer-events: none;
-  font-size: 0.85rem;
+  backdrop-filter: blur(4px);
+  background: #1f5e48dd;
+  font-size: 0.9rem;
 }
-.toast-success.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-@keyframes fadeSlide { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+.toast-success.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: none;
+}
 
-@media (max-width: 680px) {
-  .card-body { padding: 1rem; }
-  .btn { padding: 0.4rem 0.9rem; font-size: 0.8rem; }
-  .card-header h1 { font-size: 1.4rem; }
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 560px) {
+  .card-body {
+    padding: 1.5rem;
+  }
+  .btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.8rem;
+  }
+  .card-header h1 {
+    font-size: 1.4rem;
+  }
+  .button-panel {
+    gap: 8px;
+  }
 }
