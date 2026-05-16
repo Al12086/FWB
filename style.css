@@ -47,12 +47,14 @@ body::after {
   color: rgba(255, 255, 255, 0.08);
   pointer-events: none;
   z-index: 0;
+  animation: floatPlane 20s ease-in-out infinite;
 }
 
 .airplane-bg:nth-child(1) {
   top: 40%;
   left: 5%;
   transform: rotate(10deg);
+  animation-duration: 22s;
 }
 
 .airplane-bg:nth-child(2) {
@@ -60,6 +62,8 @@ body::after {
   right: 8%;
   transform: rotate(-20deg) scaleX(-1);
   font-size: 120px;
+  animation-duration: 28s;
+  animation-direction: reverse;
 }
 
 .airplane-bg:nth-child(3) {
@@ -68,6 +72,8 @@ body::after {
   transform: rotate(45deg);
   font-size: 80px;
   opacity: 0.4;
+  animation-duration: 18s;
+  animation-delay: -5s;
 }
 
 .cloud {
@@ -77,6 +83,7 @@ body::after {
   filter: blur(40px);
   pointer-events: none;
   z-index: 0;
+  animation: cloudDrift 30s linear infinite;
 }
 
 .cloud1 {
@@ -91,6 +98,8 @@ body::after {
   height: 280px;
   bottom: 0%;
   right: -180px;
+  animation-duration: 40s;
+  animation-direction: reverse;
 }
 
 .cloud3 {
@@ -98,6 +107,7 @@ body::after {
   height: 200px;
   top: 55%;
   left: 70%;
+  animation-duration: 35s;
 }
 
 .card {
@@ -107,24 +117,29 @@ body::after {
   border-radius: 1rem;
   box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.35);
   overflow: hidden;
-  /* Убираем transition, связанную с transform, чтобы не было масштабирования */
   transition: none;
   position: relative;
   z-index: 2;
 }
 
-/* Убираем масштабирование при наведении */
 .card:hover {
   transform: none;
 }
 
 .card-header {
-  background: linear-gradient(135deg, #1a3f64, #0f2c48, #1e4a73);
+  background: linear-gradient(135deg, #1a3f64, #0f2c48, #1e4a73, #0f2c48);
   background-size: 200% 200%;
   padding: 1.6rem 2rem;
   text-align: center;
   color: white;
   border-bottom: 1px solid rgba(255,255,255,0.2);
+  animation: gradientShift 10s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .card-header h1 {
@@ -178,16 +193,21 @@ textarea {
   font-family: 'Inter', monospace;
   font-size: 0.9rem;
   line-height: 1.5;
-  transition: all 0.25s;
+  transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1), box-shadow 0.2s;
   background: #ffffff;
   resize: vertical;
   font-weight: 450;
 }
 
+textarea:hover {
+  border-color: #2d6a8f;
+  box-shadow: 0 4px 12px rgba(45, 106, 143, 0.15);
+}
+
 textarea:focus {
   outline: none;
   border-color: #2d6a8f;
-  box-shadow: 0 0 0 3px rgba(45, 106, 143, 0.2);
+  box-shadow: 0 0 0 3px rgba(45, 106, 143, 0.2), 0 4px 12px rgba(45, 106, 143, 0.15);
   background: #ffffff;
 }
 
@@ -241,9 +261,17 @@ textarea:focus {
   background: linear-gradient(100deg, #2d6a8f, #1d4d6b);
   color: white;
   box-shadow: 0 4px 12px -4px rgba(30, 80, 110, 0.4);
+  animation: softPulse 2s infinite;
+}
+
+@keyframes softPulse {
+  0% { box-shadow: 0 4px 12px -4px rgba(30, 80, 110, 0.4); }
+  50% { box-shadow: 0 6px 18px -2px rgba(30, 80, 110, 0.6); }
+  100% { box-shadow: 0 4px 12px -4px rgba(30, 80, 110, 0.4); }
 }
 
 .btn-primary:hover {
+  animation: none;
   background: linear-gradient(100deg, #1d4d6b, #123a52);
   transform: translateY(-2px);
   box-shadow: 0 8px 18px -6px rgba(0, 0, 0, 0.25);
@@ -283,13 +311,7 @@ textarea:focus {
   display: flex;
   align-items: center;
   gap: 10px;
-  /* убираем backdrop-filter, чтобы не было размытия при анимации */
-  /* backdrop-filter: blur(4px); */
   animation: fadeSlide 0.3s ease forwards;
-  background: #fee9e6; /* у ошибки был свой фон, оставим его */
-}
-
-.alert-error {
   background: #fee9e6;
   color: #b13e2d;
   border-left: 4px solid #e67e5c;
@@ -300,7 +322,7 @@ textarea:focus {
   bottom: 2rem;
   left: 50%;
   transform: translateX(-50%) translateY(20px);
-  background: #1f5e48;
+  background: #1f5e48dd;
   color: white;
   padding: 0.75rem 1.5rem;
   border-radius: 2rem;
@@ -313,9 +335,6 @@ textarea:focus {
   opacity: 0;
   transition: opacity 0.25s, transform 0.25s;
   pointer-events: none;
-  /* убираем backdrop-filter */
-  /* backdrop-filter: blur(4px); */
-  background: #1f5e48dd;
   font-size: 0.9rem;
 }
 
@@ -334,6 +353,17 @@ textarea:focus {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+@keyframes floatPlane {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(12px, -8px) rotate(2deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes cloudDrift {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(25px); }
 }
 
 @media (max-width: 560px) {
