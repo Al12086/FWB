@@ -144,12 +144,13 @@ body::after {
 }
 
 .input-group {
-  margin-bottom: 0;          /* Убираем нижний отступ у всех групп */
+  margin-bottom: 0.8rem;
 }
 
 .message-area {
-  margin: 0;                 /* Убираем отступы у блока ошибок */
-  min-height: 0;             /* Убираем минимальную высоту, чтобы блок схлопывался */
+  min-height: 50px;
+  margin-top: 0.3rem;
+  margin-bottom: 0.5rem;
 }
 
 label {
@@ -189,7 +190,7 @@ textarea:focus {
 }
 
 #input {
-  min-height: 180px;
+  min-height: 270px;   /* увеличено в 1.5 раза (было 180px) */
 }
 
 #output {
@@ -211,7 +212,7 @@ textarea:focus {
   flex-wrap: wrap;
   justify-content: center;
   gap: 12px;
-  margin: 1rem 0 1rem 0;    /* Одинаковые отступы сверху и снизу */
+  margin: 0.8rem 0 1.5rem;
 }
 
 .btn {
